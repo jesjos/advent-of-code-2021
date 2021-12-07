@@ -1,4 +1,3 @@
-use std::error::Error;
 use std::str::FromStr;
 use crate::day_2::Instruction::{Down, Forward, Up};
 
@@ -54,8 +53,7 @@ impl State {
 
 struct Delta {
     pub delta_depth: i32,
-    pub delta_horizontal: i32,
-    pub delta_aim: i32
+    pub delta_horizontal: i32
 }
 
 fn perform_part1(instruction: &str) -> Delta {
@@ -64,9 +62,9 @@ fn perform_part1(instruction: &str) -> Delta {
         i32::try_from(unsigned).unwrap()
     }
     match parsed {
-        Forward(steps) => Delta { delta_depth: 0, delta_horizontal: to_signed(steps), delta_aim: 0 },
-        Down(steps) => Delta { delta_depth: to_signed(steps), delta_horizontal: 0, delta_aim: 0},
-        Up(steps) => Delta { delta_depth: -to_signed(steps), delta_horizontal: 0, delta_aim: 0}
+        Forward(steps) => Delta { delta_depth: 0, delta_horizontal: to_signed(steps)},
+        Down(steps) => Delta { delta_depth: to_signed(steps), delta_horizontal: 0},
+        Up(steps) => Delta { delta_depth: -to_signed(steps), delta_horizontal: 0}
     }
 }
 
