@@ -1,14 +1,14 @@
 use std::str::FromStr;
 use crate::day_2::Instruction::{Down, Forward, Up};
 
-fn travel(instructions: &str) -> i32 {
+pub(crate) fn travel(instructions: &str) -> i32 {
     instructions
         .lines()
         .map(perform_part1)
         .fold(State::new(), |state, delta| state.apply(delta)).value()
 }
 
-fn travel_part2(instructions: &str) -> i32 {
+pub(crate) fn travel_part2(instructions: &str) -> i32 {
     instructions
         .lines()
         .map(Instruction::from_str)
@@ -80,7 +80,7 @@ impl FromStr for Instruction {
     type Err = String;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let mut split = s.split(" ");
+        let mut split = s.split(' ');
         let action = split.next().unwrap();
         let value = split.next().unwrap();
         match action {
