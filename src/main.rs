@@ -1,10 +1,12 @@
 use crate::day_1::{count_increases, count_windowed_increases};
 use crate::day_2::{travel, travel_part2};
 use crate::day_3::{power_consumption, life_support_rating};
+use crate::day_4::{day4_part1};
 
 mod day_1;
 mod day_2;
 mod day_3;
+mod day_4;
 
 fn main() {
     let day1_input = include_str!("day1.txt");
@@ -19,4 +21,6 @@ fn main() {
     println!("Day 3 part 1 result: {}", power_consumption(day3_input));
     println!("Day 3 part 2 result: {}", life_support_rating(day3_input));
 
+    let day4_input = include_str!("day4.txt");
+    println!("Day 4 part 1 result: {}", day4_part1(day4_input));
 }
