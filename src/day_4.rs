@@ -56,7 +56,7 @@ fn has_bingo(board: &Board, drawn_numbers: &[u8]) -> bool {
 fn has_column_bingo(board: &Board, drawn_numbers: &[u8]) -> bool {
     let bingo_column = (0..5)
         .map(|col_index: usize| board.iter()
-            .filter_map(|row| row.get(col_index).and_then(|num| Some(num.clone()))).collect::<Vec<u8>>()
+            .filter_map(|row| row.get(col_index).copied()).collect::<Vec<u8>>()
         ).find(|column| contains_all(&column[..], drawn_numbers));
     bingo_column.is_some()
 }
@@ -76,7 +76,7 @@ struct SublistIterator<'a> {
 }
 
 impl SublistIterator<'_> {
-    fn new<'a>(origin: &'a[u8]) -> SublistIterator<'a> {
+    fn new(origin: &[u8]) -> SublistIterator {
         SublistIterator {
             output: Vec::new(),
             iter: origin.iter()
@@ -84,7 +84,7 @@ impl SublistIterator<'_> {
     }
 
     fn drawn_numbers(self) -> Vec<u8> {
-        self.output.clone()
+        self.output
     }
 }
 
@@ -92,9 +92,8 @@ impl Iterator for SublistIterator<'_> {
     type Item = Vec<u8>;
 
     fn next(&mut self) -> Option<Self::Item> {
-        let next = self.iter.next();
-        if next.is_some() {
-            self.output.push(*next.unwrap());
+        if let Some(next) = self.iter.next() {
+            self.output.push(*next);
             Some(self.output.clone())
         } else {
             None
@@ -104,7 +103,7 @@ impl Iterator for SublistIterator<'_> {
 
 type BingoResult<'a> = (&'a Board, Vec<u8>);
 
-fn run_bingo<'a>(boards: &'a [Board], drawn_numbers: &'_ DrawnNumbers) -> Option<BingoResult<'a>> {
+fn run_bingo<'a>(boards: &'a [Board], drawn_numbers: &'_[u8]) -> Option<BingoResult<'a>> {
     let mut iter = SublistIterator::new(drawn_numbers);
     iter
         .find_map(|drawn_numbers| boards.iter()
@@ -112,7 +111,7 @@ fn run_bingo<'a>(boards: &'a [Board], drawn_numbers: &'_ DrawnNumbers) -> Option
         ).map(|bingo_board| (bingo_board, iter.drawn_numbers()))
 }
 
-fn unmarked_numbers<'a>(board: &'a Board, drawn_numbers: &'_ DrawnNumbers) -> Vec<&'a u8> {
+fn unmarked_numbers<'a>(board: &'a Board, drawn_numbers: &'_[u8]) -> Vec<&'a u8> {
     board.iter()
         .flatten()
         .filter(|num| !drawn_numbers.contains(num))
